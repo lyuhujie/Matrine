@@ -1,0 +1,158 @@
+[TOC]
+
+
+## 加载所需的包
+```{r}
+# 软件检测和安装
+
+library(ggplot2)
+library(dplyr)
+library(ggbreak)
+library(grid) 
+
+
+```
+
+## 数据导入
+```{r}
+# 设置文件路径
+metadata_file <- "C:/Matrine_part_I/result/metadata.txt"
+faprotax_file <- "C:/Matrine_part_I/result/faprotax2/faprotax.txt"
+# 读取 metadata 
+metadata <- read.table(metadata_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+# 读取 all_group_longformat
+faprotax <- read.table(faprotax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+
+print(metadata)
+print(faprotax)
+
+```    
+
+## 数据处理1
+```{r}
+# 去除全为0的行
+faprotax <- faprotax %>%
+  filter(rowSums(select(., -groupID)) > 0)
+faprotax
+write_tsv(faprotax, "C:/Matrine_part_I/result/faprotax2/faprotax_less.txt")
+
+# 将faprotax数据从宽格式转换为长格式
+faprotax_long <- faprotax %>%
+  pivot_longer(names_to = "variable", -groupID, values_to = "Value")
+faprotax_long
+
+# 将长格式数据的列名设置为符合要求的样式
+colnames(faprotax_long) <- c("variable", "group", "value")
+faprotax_long
+write_tsv(faprotax_long, "C:/Matrine_part_I/result/faprotax2/faprotax_long.txt")
+
+
+# 合并faprotax数据和metadata
+merged_data <- faprotax_long %>%
+  left_join(metadata, by = c("group" = "SampleID"))
+
+merged_data$value <- log2(merged_data$value + 1)
+
+merged_data
+
+
+```    
+
+
+
+## 数据处理
+```{r}
+
+# 这里可以不用。先列出来。
+# # 定义变量顺序
+# variable_order <- c("methanol_oxidation", "methylotrophy", "sulfate_respiration", "sulfur_respiration",
+#                     "respiration_of_sulfur_compounds", "knallgas_bacteria", "dark_hydrogen_oxidation",
+#                     "nitrogen_fixation", "cellulolysis", "dark_sulfur_oxidation", "dark_oxidation_of_sulfur_compounds", "fermentation",
+#                     "aerobic_chemoheterotrophy", "human_gut", "human_associated", "mammal_gut", "animal_parasites_or_symbionts",
+#                     "aromatic_compound_degradation", "nitrate_reduction", "ureolysis", "reductive_acetogenesis", "chemoheterotrophy")
+# # print(merged_data)
+# 
+# # 仅保留 variable_order 中的变量
+# merged_data <- merged_data[merged_data$variable %in% variable_order, ]
+# 
+# merged_data$variable <- factor(merged_data$variable, levels = rev(variable_order)) # 逆转顺序以确保从上到下的顺序
+```    
+
+## 图形绘制
+```{r}
+# 自定义配色
+custom_colors <- c("ANC" = "#FBB4AE", "BHD" = "#B3CDE3", "CMD" = "#CCEBC5")
+
+# 按顺序排列
+p <- ggplot(merged_data, aes(x = variable, y = value, fill = Group_big)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = custom_colors) + # 应用自定义配色
+  labs(title = "OTU Abundance") + # 设置标题
+  theme_minimal() +
+  scale_x_continuous(expand = c(0, 0), position = "top") # 设置 x 轴只在顶部展示
+  
+# 绘制柱状图
+p <- ggplot(merged_data, aes(x = variable, y = value, fill = Group_big)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = custom_colors) + # 应用自定义配色
+  labs(title = "OTU Abundance",
+       x = "Variable",
+       y = "Log2",
+       fill = "Group_big") + # 设置标题和标签
+  theme_minimal() +
+  theme(
+    axis.text.y = element_text(size = 6, hjust = 1), # 设置字体大小为 6pt
+    axis.text.x = element_text(size = 6, angle = 45, hjust = 1), # 设置字体大小为 6pt，旋转标签
+    plot.title = element_text(size = 10, hjust = 0.5), # 设置标题字体大小并居中
+    panel.grid.major = element_blank(), # 移除主网格线
+    panel.grid.minor = element_blank(), # 移除次网格线
+    axis.line = element_line(color = "black"), # 添加坐标轴线
+    axis.ticks = element_line(color = "black"), # 添加刻度线
+    panel.background = element_blank() # 移除背景
+  )
+
+print(p)
+
+# 导出文件
+# Save the plot as a PNG file
+ggsave("C:/Matrine_part_I/result/faprotax2/bar_plot_new.png", plot = p, width = 8, height = 5)
+# Save the plot as a PDF file
+ggsave("C:/Matrine_part_I/result/faprotax2/bar_plot_new.pdf", plot = p, width = 8, height = 5)
+
+
+```    
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

@@ -1,0 +1,141 @@
+---
+title: "带K-means聚类和注释的热图"
+output: pdf_document
+---
+
+
+[TOC]
+
+# 原始数据处理，筛选和生成输入文件
+```{r}
+# 加在数据库
+library(dplyr)
+library(psych)
+library(pheatmap)
+library(reshape2)
+library(grid)
+library(tidyr)
+library(ComplexHeatmap)
+library(grDevices)
+
+# Read the data from sum_g.txt
+data <- read.table("C:/Matrine_part_I/result/tax/sum_g.txt", header = TRUE, sep = "\t")
+metadata <- read.table("C:/Matrine_part_I/result/metadata.txt", header = TRUE, sep = "\t")
+
+# Define the list of microorganisms to filter
+microorganisms <- c("Bacteroides", "Kineothrix", "Duncaniella", "Lacrimispora", "Paramuribaculum", 
+                    "Flintibacter", "Enterocloster", "Muribaculum", "Acetatifactor", "Oscillibacter", 
+                    "Eisenbergiella", "Clostridium_XlVa", "Roseburia", "Blautia", "Lawsonibacter", 
+                    "Vallitalea", "Akkermansia", "Neglecta", "Alistipes", "Bifidobacterium", 
+                    "Lachnospiracea_incertae_sedis", "Anaerocolumna", "Parabacteroides", 
+                    "Anaerotignum", "Pseudescherichia", "Intestinimonas", "Acetivibrio", 
+                    "Alkaliphilus", "Ruminococcus", "Ligilactobacillus")
+
+# 过滤数据
+filtered_data <- data %>% filter(Genus %in% microorganisms)
+# 导出数据到新的文件中
+write.table(filtered_data, "C:/Matrine_part_I/result/new_heatmap/filtered_sum_g_new.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 定义感兴趣的分组NCC、HDC和MDC
+groups_of_interest <- c("HDC", "MDC")
+# 筛选元数据中属于这些分组的样本
+metadata_filtered <- metadata %>% filter(Group %in% groups_of_interest)
+# 提取这些分组对应的样本ID
+sample_ids <- metadata_filtered$SampleID
+
+
+# 基于这些样本ID筛选数据列，首先确保这些列存在于数据中，然后筛选最终数据保留相关列
+columns_to_keep <- c("Genus", sample_ids)
+# 确保这些列存在于数据中
+columns_to_keep <- columns_to_keep[columns_to_keep %in% colnames(filtered_data)]
+# 筛选最终数据保留相关列
+final_filtered_data <- filtered_data[, columns_to_keep]
+# 将最终筛选后的数据写入一个新的文件final_filtered_sum_g.txt
+write.table(final_filtered_data, "C:/Matrine_part_I/result/new_heatmap/final_filtered_sum_g_new.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+
+
+# 将最终筛选后的数据进行行列转置
+transposed_data <- final_filtered_data %>%
+  gather(key = "SampleID", value = "Abundance", -Genus) %>%
+  spread(key = "Genus", value = "Abundance")
+# 修改列名，将第一列名改为Genus
+colnames(transposed_data)[1] <- "Genus"
+transposed_data
+
+write.table(transposed_data, "C:/Matrine_part_I/result/new_heatmap/genus_phy.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+
+
+```
+
+
+# 绘制相关性热图
+```{r}
+##
+# 读取微生物丰度信息表
+genus_phy <- read.table(file = "C:/Matrine_part_I/result/new_heatmap/genus_phy.txt", sep = "\t", header = TRUE, row.names = 1)
+# 读取代谢物信息表
+genus_met <- read.table(file = "C:/Matrine_part_I/result/new_heatmap/genus_met.txt", sep = "\t", header = TRUE, row.names = 1)
+
+
+## 
+#计算相关性矩阵（可选：”pearson”、”spearman”、”kendall”相关系数）、p值矩阵
+cor_result <- corr.test(genus_phy, genus_met, method = "kendall", adjust = "none")
+# 提取相关性、p值
+cmt <- cor_result$r
+pmt <- cor_result$p
+# 输出相关系数表格, 第一行为代谢物信息，第一列为物种信息
+cmt.out <- cbind(rownames(cmt), cmt)
+write.table(cmt.out, file = "C:/Matrine_part_I/result/new_heatmap/cor_new3.txt", sep = "\t", row.names = FALSE)
+# 输出p值表格，第一行为代谢物信息，第一列为物种信息
+pmt.out <- cbind(rownames(pmt), pmt)
+write.table(pmt.out, file = "C:/Matrine_part_I/result/new_heatmap/pvalue_new3.txt", sep = "\t", row.names = FALSE)
+# 以关系对的形式输出表格
+# 第一列为物种名，第二列为代谢物名，第三、第四列对应显示相关系数与p值
+df <- melt(cmt, value.name = "cor")
+df$pvalue <- as.vector(pmt)
+write.table(df, file = "C:/Matrine_part_I/result/new_heatmap/cor-p_new3.txt", sep = "\t")
+
+
+##
+# 对所有p值进行判断，p<0.01的以“**”标注，p值0.01<p<0.05的以“*”标注
+if (!is.null(pmt)) {
+  ssmt <- pmt < 0.01
+  pmt[ssmt] <- '**'
+  smt <- pmt > 0.01 & pmt < 0.05
+  pmt[smt] <- '*'
+  pmt[!ssmt & !smt] <- ''
+} else {
+  pmt <- FALSE
+}
+
+
+## 绘制相关性热图
+# 自定义颜色范围
+mycol <- colorRampPalette(c("blue", "white", "tomato"))(800)
+
+# 绘制热图, 可根据个人需求调整对应参数
+heatmap_plot <- pheatmap(cmt,
+         scale = "none",
+         cluster_row = TRUE, 
+         cluster_col = TRUE, 
+         border = NA,
+         display_numbers = pmt,
+         fontsize_number = 12, 
+         number_color = "white",
+         cellwidth = 20, 
+         cellheight = 12, 
+         color = mycol,
+         main = "物种与代谢物的相关性热图 (Kendall)")
+
+pdf("C:/Matrine_part_I/result/new_heatmap/correlation_heatmap_new3.pdf", width = 6, height = 8)
+draw(heatmap_plot, heatmap_legend_side = "right")
+dev.off()
+
+```
+
+
+
+
+
+
+ 
