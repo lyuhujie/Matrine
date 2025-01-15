@@ -1,0 +1,33 @@
+
+
+Forms_Biofilms
+Number of samples in each treatment group:
+
+ANC BHD CMD 
+ 15  15  15 
+
+Proportion with phenotype (mean):
+       ANC        BHD        CMD 
+0.09721359 0.04569984 0.06123863 
+
+Proportion with phenotype (median):
+       ANC        BHD        CMD 
+0.10007692 0.02800744 0.02331673 
+
+Standard deviation:
+       ANC        BHD        CMD 
+0.06156857 0.04805860 0.08179870 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+  0.020902   0.050222   0.566774 
+
+FDR-corrected pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+0.06270692 0.07533356 0.56677449 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.04425968 

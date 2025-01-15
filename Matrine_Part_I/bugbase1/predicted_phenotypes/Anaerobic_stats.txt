@@ -1,0 +1,33 @@
+
+
+Anaerobic
+Number of samples in each treatment group:
+
+ANC BHD CMD 
+ 15  15  15 
+
+Proportion with phenotype (mean):
+      ANC       BHD       CMD 
+0.9324711 0.9521399 0.9266098 
+
+Proportion with phenotype (median):
+      ANC       BHD       CMD 
+0.9547160 0.9730712 0.9591313 
+
+Standard deviation:
+       ANC        BHD        CMD 
+0.03971233 0.04990729 0.07999016 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+  0.018554   0.366875   0.285441 
+
+FDR-corrected pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+0.05566118 0.36687519 0.36687519 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.07884354 

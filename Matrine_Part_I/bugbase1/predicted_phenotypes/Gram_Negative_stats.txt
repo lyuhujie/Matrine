@@ -1,0 +1,33 @@
+
+
+Gram_Negative
+Number of samples in each treatment group:
+
+ANC BHD CMD 
+ 15  15  15 
+
+Proportion with phenotype (mean):
+      ANC       BHD       CMD 
+0.3095804 0.2421089 0.2928470 
+
+Proportion with phenotype (median):
+      ANC       BHD       CMD 
+0.3216748 0.2162448 0.2446446 
+
+Standard deviation:
+       ANC        BHD        CMD 
+0.06969757 0.12016881 0.20437803 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+  0.050222   0.160685   0.652870 
+
+FDR-corrected pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+ 0.1506671  0.2410282  0.6528700 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.1256565 

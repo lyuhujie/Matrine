@@ -1,0 +1,33 @@
+
+
+Stress_Tolerant
+Number of samples in each treatment group:
+
+ANC BHD CMD 
+ 15  15  15 
+
+Proportion with phenotype (mean):
+      ANC       BHD       CMD 
+0.9444526 0.9378202 0.9831291 
+
+Proportion with phenotype (median):
+      ANC       BHD       CMD 
+0.9816593 0.9623061 0.9862346 
+
+Standard deviation:
+       ANC        BHD        CMD 
+0.05823360 0.07180987 0.01082594 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+0.28544087 0.03294364 0.00069555 
+
+FDR-corrected pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+0.28544087 0.04941546 0.00208665 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.004018252 

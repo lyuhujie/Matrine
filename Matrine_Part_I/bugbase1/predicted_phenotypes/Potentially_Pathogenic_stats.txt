@@ -1,0 +1,33 @@
+
+
+Potentially_Pathogenic
+Number of samples in each treatment group:
+
+ANC BHD CMD 
+ 15  15  15 
+
+Proportion with phenotype (mean):
+      ANC       BHD       CMD 
+0.3639892 0.2502520 0.3363381 
+
+Proportion with phenotype (median):
+      ANC       BHD       CMD 
+0.3816654 0.2364486 0.2791246 
+
+Standard deviation:
+       ANC        BHD        CMD 
+0.09269426 0.07504859 0.19287041 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+ANC_vs_BHD ANC_vs_CMD BHD_vs_CMD 
+ 0.0016652  0.1484800  0.2016794 
+
+FDR-corrected pairwise p-values are:
+ ANC_vs_BHD  ANC_vs_CMD  BHD_vs_CMD 
+0.004995645 0.201679436 0.201679436 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.01192197 
