@@ -1,0 +1,124 @@
+[TOC]
+
+
+
+```{r}
+# 软件检测和安装
+# Load required libraries
+# 加载所需的库
+# 加载必要的包
+# install.packages("corrplot")
+# if (!require("readr")) install.packages("readr")
+library(corrplot)
+library(readr)
+library(dplyr)
+
+library(ImageGP)
+library(pheatmap)
+library(RColorBrewer)
+library(grid)
+library(vegan)
+library(stringr)
+
+```
+
+
+
+## 数据加载
+```{r}
+otu_file <- "C:/Matrine_part_I/result/otutab_rare.txt"
+metadata_file <- "C:/Matrine_part_I/result/metadata.txt"
+
+metadata <- read_tsv(metadata_file)
+otu_data <- read_tsv(otu_file)
+
+# 数据合并
+otu_data_t <- as.data.frame(t(otu_data[,-1]))
+colnames(otu_data_t) <- otu_data$OTUID
+otu_data_t$SampleID <- rownames(otu_data_t)
+
+# 合并数据
+merged_data <- merge(metadata, otu_data_t, by = "SampleID")
+
+
+```  
+
+
+
+## 合并同一个分组
+```{r}
+# 根据Group列合并OTU数据
+grouped_otu_data <- merged_data %>%
+  select(SampleID, starts_with("ASV")) %>%
+  group_by(SampleID) %>%
+  summarise(across(everything(), mean, na.rm = TRUE)) %>%
+  t() %>%
+  as.data.frame()
+
+# 设置第一行作为分组信息
+colnames(grouped_otu_data) <- grouped_otu_data[1,]
+grouped_otu_data <- grouped_otu_data[-1,]
+
+grouped_otu_data[] <- lapply(grouped_otu_data, function(x) as.numeric(as.character(x)))
+
+# 计算相关性矩阵
+otu_matrix <- as.matrix(grouped_otu_data)
+cor_matrix <- cor(otu_matrix, use = "pairwise.complete.obs", method = "spearman")
+
+
+
+
+```    
+
+
+## 热图绘制
+```{r}
+col <- colorRampPalette(c("#9FA4FF", "#50EBC5", "#FB9AAE"))(100)
+
+# 绘制相关性热图
+corrplot(cor_matrix, col = col, method = "pie", type = "upper", 
+         tl.cex = 0.8, tl.col = "black",diag = FALSE,order = "hclust", addrect = 3,
+         addCoef.col = "black", number.cex = 0.8)
+
+corrplot.mixed(cor_matrix, lower = "number", upper = "pie", tl.cex = 0.8, tl.col = "black", diag = "n", order = "hclust", addrect = 3, upper.col = col, lower.col = col)
+
+
+
+# 导出为PDF
+pdf("C:/Matrine_part_I/result/beta2/correlation_heatmap_all_spearman2.pdf", width = 14, height = 14)
+corrplot.mixed(cor_matrix, lower = "number", upper = "pie", tl.cex = 0.6, number.cex = 0.6, tl.col = "black", diag = "n", order = "hclust", addrect = 3, upper.col = col, lower.col = col)
+
+dev.off()
+
+
+```    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+ 
+ 
