@@ -1,0 +1,139 @@
+---
+title: "带K-means聚类和注释的热图"
+output: pdf_document
+---
+
+
+[TOC]
+
+# ComplexHeatmap结果分析和可视化
+
+https://github.com/cafferychen777/ggpicrust2
+
+ggpicrust2是一个综合软件包，旨在为分析和解释 PICRUSt2 功能预测结果提供无缝且直观的解决方案。它提供了广泛的功能，包括通路名称/描述注释、高级差异丰度 (differential abundance, DA) 方法以及 DA 结果的可视化。
+
+
+```{r}
+# 软件检测和安装
+# 安装并加载必要的包
+if (!requireNamespace("ComplexHeatmap", quietly = TRUE)) {
+    BiocManager::install("ComplexHeatmap")
+}
+if (!requireNamespace("pheatmap", quietly = TRUE)) {
+    install.packages("pheatmap")
+}
+if (!requireNamespace("rmarkdown", quietly = TRUE)) {
+    install.packages("rmarkdown")
+}
+
+library(ComplexHeatmap)
+library(pheatmap)
+library(cluster)
+library(rmarkdown)
+library(grid)
+
+```
+
+## 数据导入
+```{r}
+# 设置随机种子以保证结果可重复
+set.seed(123)
+
+# 创建一个更大规模的随机矩阵作为示例数据
+data_large <- matrix(rnorm(1000), nrow = 50, ncol = 20)
+rownames(data_large) <- paste0("genus", 1:50)
+colnames(data_large) <- paste0("sample", 1:20)
+
+
+```    
+
+
+## 数据处理
+```{r}
+# 对行（基因）进行K-means聚类
+row_k <- 5  # 行聚类的数量
+row_km <- kmeans(data_large, centers = row_k)
+
+# 对列（样本）进行K-means聚类
+col_k <- 4  # 列聚类的数量
+col_km <- kmeans(t(data_large), centers = col_k)
+
+# 根据K-means聚类结果创建行和列注释
+row_ha <- rowAnnotation(cluster = as.factor(row_km$cluster))
+col_ha <- HeatmapAnnotation(cluster = as.factor(col_km$cluster))
+
+```    
+
+
+
+## 注释内容
+```{r}
+# 创建行和列注释内容
+gene_annotation <- data.frame(
+  Gene = rownames(data_large),
+  Description = paste("description", 1:50)
+)
+sample_annotation <- data.frame(
+  Sample = colnames(data_large),
+  Type = rep(c("Type1", "Type2", "Type3", "Type4"), each = 5)
+)
+
+# 添加行和列注释
+row_ha <- rowAnnotation(
+  cluster = as.factor(row_km$cluster),
+  Gene = anno_text(gene_annotation$Description)
+)
+col_ha <- HeatmapAnnotation(
+  cluster = as.factor(col_km$cluster),
+  Type = sample_annotation$Type
+)
+
+
+```    
+
+
+
+
+
+
+## 绘制热图
+```{r}
+# 定义自定义颜色 - 海洋配色方案
+colors <- colorRampPalette(c("#2c7bb6", "#ffffbf", "#d7191c"))(100)
+
+# 绘制带K-means聚类和层次聚类的热图，并添加注释
+heatmap_plot <- Heatmap(data_large, name = "expression levels",
+        top_annotation = col_ha,
+        left_annotation = row_ha,
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_split = row_km$cluster,
+        column_split = col_km$cluster,
+        show_row_dend = TRUE,
+        show_column_dend = TRUE,
+        show_row_names = TRUE,
+        show_column_names = TRUE,
+        col = colors)
+
+pdf("C:/Matrine_part_I/result/new_heatmap/heatmap_with_annotations.pdf", width = 10, height = 8)
+draw(heatmap_plot, heatmap_legend_side = "right")
+dev.off()
+
+# "#2c7bb6", "#ffffbf", "#d7191c"
+# "#67001f", "#f7f7f7", "#053061"
+# "#40004b", "#f7fcf5", "#00441b"
+
+
+
+
+
+```    
+
+
+
+
+
+
+
+
+ 
