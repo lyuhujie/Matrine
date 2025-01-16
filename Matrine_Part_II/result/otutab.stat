@@ -1,0 +1,14 @@
+   1894290  Reads (1.9M)
+        47  Samples
+      1385  OTUs
+
+     65095  Counts
+     25246  Count  =0  (38.8%)
+      7615  Count  =1  (11.7%)
+     16015  Count >=10 (24.6%)
+
+       189  OTUs found in all samples (13.6%)
+       380  OTUs found in 90% of samples (27.4%)
+       825  OTUs found in 50% of samples (59.6%)
+
+Sample sizes: min 24592, lo 39456, med 40966, mean 40304.0, hi 42805, max 45879
