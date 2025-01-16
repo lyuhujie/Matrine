@@ -1,0 +1,136 @@
+DATASET_COLORSTRIP
+SEPARATOR TAB
+BORDER_WIDTH	0.5
+COLOR	#bebada
+DATASET_LABEL	Phylum
+LEGEND_COLORS	#a6cee3	#1f78b4	#b2df8a	#33a02c	#fb9a99	#e31a1c
+LEGEND_LABELS	Bacteroidetes	Deferribacteres	Firmicutes	Proteobacteria	Unassigned	Verrucomicrobia
+LEGEND_SHAPES	1	1	1	1	1	1
+LEGEND_TITLE	Phylum
+MARGIN	5
+STRIP_WIDTH	25
+DATA
+ASV_1	#b2df8a	Firmicutes
+ASV_2	#b2df8a	Firmicutes
+ASV_4	#33a02c	Proteobacteria
+ASV_15	#b2df8a	Firmicutes
+ASV_3	#e31a1c	Verrucomicrobia
+ASV_6	#a6cee3	Bacteroidetes
+ASV_9	#b2df8a	Firmicutes
+ASV_8	#b2df8a	Firmicutes
+ASV_12	#b2df8a	Firmicutes
+ASV_7	#33a02c	Proteobacteria
+ASV_5	#1f78b4	Deferribacteres
+ASV_13	#a6cee3	Bacteroidetes
+ASV_26	#b2df8a	Firmicutes
+ASV_11	#a6cee3	Bacteroidetes
+ASV_14	#b2df8a	Firmicutes
+ASV_16	#33a02c	Proteobacteria
+ASV_10	#a6cee3	Bacteroidetes
+ASV_22	#a6cee3	Bacteroidetes
+ASV_27	#b2df8a	Firmicutes
+ASV_97	#b2df8a	Firmicutes
+ASV_21	#b2df8a	Firmicutes
+ASV_24	#b2df8a	Firmicutes
+ASV_19	#b2df8a	Firmicutes
+ASV_17	#b2df8a	Firmicutes
+ASV_23	#a6cee3	Bacteroidetes
+ASV_20	#a6cee3	Bacteroidetes
+ASV_28	#b2df8a	Firmicutes
+ASV_31	#b2df8a	Firmicutes
+ASV_29	#b2df8a	Firmicutes
+ASV_41	#b2df8a	Firmicutes
+ASV_25	#a6cee3	Bacteroidetes
+ASV_201	#b2df8a	Firmicutes
+ASV_51	#b2df8a	Firmicutes
+ASV_44	#b2df8a	Firmicutes
+ASV_46	#b2df8a	Firmicutes
+ASV_32	#a6cee3	Bacteroidetes
+ASV_30	#b2df8a	Firmicutes
+ASV_35	#b2df8a	Firmicutes
+ASV_52	#b2df8a	Firmicutes
+ASV_50	#b2df8a	Firmicutes
+ASV_36	#b2df8a	Firmicutes
+ASV_33	#a6cee3	Bacteroidetes
+ASV_417	#b2df8a	Firmicutes
+ASV_43	#b2df8a	Firmicutes
+ASV_38	#b2df8a	Firmicutes
+ASV_56	#b2df8a	Firmicutes
+ASV_34	#fb9a99	Unassigned
+ASV_1253	#b2df8a	Firmicutes
+ASV_53	#a6cee3	Bacteroidetes
+ASV_42	#b2df8a	Firmicutes
+ASV_45	#b2df8a	Firmicutes
+ASV_37	#a6cee3	Bacteroidetes
+ASV_39	#b2df8a	Firmicutes
+ASV_59	#b2df8a	Firmicutes
+ASV_109	#b2df8a	Firmicutes
+ASV_58	#b2df8a	Firmicutes
+ASV_40	#b2df8a	Firmicutes
+ASV_48	#b2df8a	Firmicutes
+ASV_64	#b2df8a	Firmicutes
+ASV_55	#b2df8a	Firmicutes
+ASV_74	#b2df8a	Firmicutes
+ASV_89	#b2df8a	Firmicutes
+ASV_73	#b2df8a	Firmicutes
+ASV_1365	#b2df8a	Firmicutes
+ASV_57	#a6cee3	Bacteroidetes
+ASV_82	#b2df8a	Firmicutes
+ASV_47	#a6cee3	Bacteroidetes
+ASV_54	#a6cee3	Bacteroidetes
+ASV_75	#a6cee3	Bacteroidetes
+ASV_49	#a6cee3	Bacteroidetes
+ASV_76	#b2df8a	Firmicutes
+ASV_507	#b2df8a	Firmicutes
+ASV_61	#a6cee3	Bacteroidetes
+ASV_465	#b2df8a	Firmicutes
+ASV_63	#a6cee3	Bacteroidetes
+ASV_1412	#b2df8a	Firmicutes
+ASV_67	#b2df8a	Firmicutes
+ASV_62	#b2df8a	Firmicutes
+ASV_81	#a6cee3	Bacteroidetes
+ASV_91	#b2df8a	Firmicutes
+ASV_80	#b2df8a	Firmicutes
+ASV_60	#a6cee3	Bacteroidetes
+ASV_94	#b2df8a	Firmicutes
+ASV_71	#a6cee3	Bacteroidetes
+ASV_392	#b2df8a	Firmicutes
+ASV_88	#b2df8a	Firmicutes
+ASV_68	#b2df8a	Firmicutes
+ASV_98	#b2df8a	Firmicutes
+ASV_72	#a6cee3	Bacteroidetes
+ASV_83	#a6cee3	Bacteroidetes
+ASV_300	#b2df8a	Firmicutes
+ASV_157	#b2df8a	Firmicutes
+ASV_102	#b2df8a	Firmicutes
+ASV_125	#b2df8a	Firmicutes
+ASV_87	#b2df8a	Firmicutes
+ASV_206	#b2df8a	Firmicutes
+ASV_117	#b2df8a	Firmicutes
+ASV_77	#a6cee3	Bacteroidetes
+ASV_720	#b2df8a	Firmicutes
+ASV_122	#b2df8a	Firmicutes
+ASV_95	#a6cee3	Bacteroidetes
+ASV_78	#b2df8a	Firmicutes
+ASV_130	#b2df8a	Firmicutes
+ASV_85	#b2df8a	Firmicutes
+ASV_142	#b2df8a	Firmicutes
+ASV_1658	#b2df8a	Firmicutes
+ASV_118	#b2df8a	Firmicutes
+ASV_93	#a6cee3	Bacteroidetes
+ASV_1450	#b2df8a	Firmicutes
+ASV_126	#b2df8a	Firmicutes
+ASV_101	#a6cee3	Bacteroidetes
+ASV_333	#b2df8a	Firmicutes
+ASV_100	#b2df8a	Firmicutes
+ASV_96	#b2df8a	Firmicutes
+ASV_90	#b2df8a	Firmicutes
+ASV_84	#a6cee3	Bacteroidetes
+ASV_103	#a6cee3	Bacteroidetes
+ASV_107	#b2df8a	Firmicutes
+ASV_99	#a6cee3	Bacteroidetes
+ASV_104	#a6cee3	Bacteroidetes
+ASV_119	#a6cee3	Bacteroidetes
+ASV_106	#a6cee3	Bacteroidetes
+ASV_112	#b2df8a	Firmicutes
+ASV_86	#a6cee3	Bacteroidetes

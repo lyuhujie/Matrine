@@ -1,0 +1,136 @@
+DATASET_COLORSTRIP
+SEPARATOR TAB
+BORDER_WIDTH	0
+COLOR	#bebada
+DATASET_LABEL	Class
+LEGEND_COLORS	#e41a1c	#377eb8	#4daf4a	#984ea3	#ff7f00	#ffff33	#a65628	#f781bf	#999999
+LEGEND_LABELS	Bacilli	Bacteroidia	Clostridia	Deferribacteres	Deltaproteobacteria	Erysipelotrichia	Gammaproteobacteria	Unassigned	Verrucomicrobiae
+LEGEND_SHAPES	1	1	1	1	1	1	1	1	1
+LEGEND_TITLE	Class
+MARGIN	5
+STRIP_WIDTH	25
+DATA
+ASV_1	#4daf4a	Clostridia
+ASV_2	#4daf4a	Clostridia
+ASV_4	#ff7f00	Deltaproteobacteria
+ASV_15	#4daf4a	Clostridia
+ASV_3	#999999	Verrucomicrobiae
+ASV_6	#377eb8	Bacteroidia
+ASV_9	#4daf4a	Clostridia
+ASV_8	#4daf4a	Clostridia
+ASV_12	#4daf4a	Clostridia
+ASV_7	#a65628	Gammaproteobacteria
+ASV_5	#984ea3	Deferribacteres
+ASV_13	#377eb8	Bacteroidia
+ASV_26	#4daf4a	Clostridia
+ASV_11	#377eb8	Bacteroidia
+ASV_14	#ffff33	Erysipelotrichia
+ASV_16	#ff7f00	Deltaproteobacteria
+ASV_10	#377eb8	Bacteroidia
+ASV_22	#377eb8	Bacteroidia
+ASV_27	#4daf4a	Clostridia
+ASV_97	#4daf4a	Clostridia
+ASV_21	#4daf4a	Clostridia
+ASV_24	#4daf4a	Clostridia
+ASV_19	#4daf4a	Clostridia
+ASV_17	#e41a1c	Bacilli
+ASV_23	#377eb8	Bacteroidia
+ASV_20	#377eb8	Bacteroidia
+ASV_28	#4daf4a	Clostridia
+ASV_31	#4daf4a	Clostridia
+ASV_29	#4daf4a	Clostridia
+ASV_41	#4daf4a	Clostridia
+ASV_25	#377eb8	Bacteroidia
+ASV_201	#4daf4a	Clostridia
+ASV_51	#4daf4a	Clostridia
+ASV_44	#4daf4a	Clostridia
+ASV_46	#4daf4a	Clostridia
+ASV_32	#377eb8	Bacteroidia
+ASV_30	#4daf4a	Clostridia
+ASV_35	#4daf4a	Clostridia
+ASV_52	#4daf4a	Clostridia
+ASV_50	#4daf4a	Clostridia
+ASV_36	#ffff33	Erysipelotrichia
+ASV_33	#377eb8	Bacteroidia
+ASV_417	#4daf4a	Clostridia
+ASV_43	#4daf4a	Clostridia
+ASV_38	#4daf4a	Clostridia
+ASV_56	#4daf4a	Clostridia
+ASV_34	#f781bf	Unassigned
+ASV_1253	#4daf4a	Clostridia
+ASV_53	#377eb8	Bacteroidia
+ASV_42	#4daf4a	Clostridia
+ASV_45	#4daf4a	Clostridia
+ASV_37	#377eb8	Bacteroidia
+ASV_39	#e41a1c	Bacilli
+ASV_59	#4daf4a	Clostridia
+ASV_109	#4daf4a	Clostridia
+ASV_58	#4daf4a	Clostridia
+ASV_40	#4daf4a	Clostridia
+ASV_48	#4daf4a	Clostridia
+ASV_64	#4daf4a	Clostridia
+ASV_55	#4daf4a	Clostridia
+ASV_74	#4daf4a	Clostridia
+ASV_89	#4daf4a	Clostridia
+ASV_73	#4daf4a	Clostridia
+ASV_1365	#4daf4a	Clostridia
+ASV_57	#377eb8	Bacteroidia
+ASV_82	#4daf4a	Clostridia
+ASV_47	#377eb8	Bacteroidia
+ASV_54	#377eb8	Bacteroidia
+ASV_75	#377eb8	Bacteroidia
+ASV_49	#377eb8	Bacteroidia
+ASV_76	#4daf4a	Clostridia
+ASV_507	#4daf4a	Clostridia
+ASV_61	#377eb8	Bacteroidia
+ASV_465	#4daf4a	Clostridia
+ASV_63	#377eb8	Bacteroidia
+ASV_1412	#4daf4a	Clostridia
+ASV_67	#4daf4a	Clostridia
+ASV_62	#4daf4a	Clostridia
+ASV_81	#377eb8	Bacteroidia
+ASV_91	#4daf4a	Clostridia
+ASV_80	#4daf4a	Clostridia
+ASV_60	#377eb8	Bacteroidia
+ASV_94	#4daf4a	Clostridia
+ASV_71	#377eb8	Bacteroidia
+ASV_392	#4daf4a	Clostridia
+ASV_88	#4daf4a	Clostridia
+ASV_68	#4daf4a	Clostridia
+ASV_98	#4daf4a	Clostridia
+ASV_72	#377eb8	Bacteroidia
+ASV_83	#377eb8	Bacteroidia
+ASV_300	#4daf4a	Clostridia
+ASV_157	#4daf4a	Clostridia
+ASV_102	#4daf4a	Clostridia
+ASV_125	#4daf4a	Clostridia
+ASV_87	#4daf4a	Clostridia
+ASV_206	#4daf4a	Clostridia
+ASV_117	#4daf4a	Clostridia
+ASV_77	#377eb8	Bacteroidia
+ASV_720	#4daf4a	Clostridia
+ASV_122	#4daf4a	Clostridia
+ASV_95	#377eb8	Bacteroidia
+ASV_78	#4daf4a	Clostridia
+ASV_130	#4daf4a	Clostridia
+ASV_85	#4daf4a	Clostridia
+ASV_142	#4daf4a	Clostridia
+ASV_1658	#4daf4a	Clostridia
+ASV_118	#4daf4a	Clostridia
+ASV_93	#377eb8	Bacteroidia
+ASV_1450	#4daf4a	Clostridia
+ASV_126	#4daf4a	Clostridia
+ASV_101	#377eb8	Bacteroidia
+ASV_333	#4daf4a	Clostridia
+ASV_100	#4daf4a	Clostridia
+ASV_96	#4daf4a	Clostridia
+ASV_90	#4daf4a	Clostridia
+ASV_84	#377eb8	Bacteroidia
+ASV_103	#377eb8	Bacteroidia
+ASV_107	#4daf4a	Clostridia
+ASV_99	#377eb8	Bacteroidia
+ASV_104	#377eb8	Bacteroidia
+ASV_119	#377eb8	Bacteroidia
+ASV_106	#377eb8	Bacteroidia
+ASV_112	#4daf4a	Clostridia
+ASV_86	#377eb8	Bacteroidia

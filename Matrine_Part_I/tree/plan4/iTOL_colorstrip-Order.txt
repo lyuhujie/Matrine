@@ -1,0 +1,136 @@
+DATASET_COLORSTRIP
+SEPARATOR TAB
+BORDER_WIDTH	0
+COLOR	#bebada
+DATASET_LABEL	Order
+LEGEND_COLORS	#e41a1c	#377eb8	#4daf4a	#984ea3	#ff7f00	#ffff33	#a65628	#f781bf	#999999
+LEGEND_LABELS	Bacteroidales	Clostridiales	Deferribacterales	Desulfovibrionales	Enterobacterales	Erysipelotrichales	Lactobacillales	Unassigned	Verrucomicrobiales
+LEGEND_SHAPES	1	1	1	1	1	1	1	1	1
+LEGEND_TITLE	Order
+MARGIN	5
+STRIP_WIDTH	25
+DATA
+ASV_1	#377eb8	Clostridiales
+ASV_2	#377eb8	Clostridiales
+ASV_4	#984ea3	Desulfovibrionales
+ASV_15	#377eb8	Clostridiales
+ASV_3	#999999	Verrucomicrobiales
+ASV_6	#e41a1c	Bacteroidales
+ASV_9	#377eb8	Clostridiales
+ASV_8	#377eb8	Clostridiales
+ASV_12	#377eb8	Clostridiales
+ASV_7	#ff7f00	Enterobacterales
+ASV_5	#4daf4a	Deferribacterales
+ASV_13	#e41a1c	Bacteroidales
+ASV_26	#377eb8	Clostridiales
+ASV_11	#e41a1c	Bacteroidales
+ASV_14	#ffff33	Erysipelotrichales
+ASV_16	#984ea3	Desulfovibrionales
+ASV_10	#e41a1c	Bacteroidales
+ASV_22	#e41a1c	Bacteroidales
+ASV_27	#377eb8	Clostridiales
+ASV_97	#377eb8	Clostridiales
+ASV_21	#377eb8	Clostridiales
+ASV_24	#377eb8	Clostridiales
+ASV_19	#377eb8	Clostridiales
+ASV_17	#a65628	Lactobacillales
+ASV_23	#e41a1c	Bacteroidales
+ASV_20	#e41a1c	Bacteroidales
+ASV_28	#377eb8	Clostridiales
+ASV_31	#377eb8	Clostridiales
+ASV_29	#377eb8	Clostridiales
+ASV_41	#377eb8	Clostridiales
+ASV_25	#e41a1c	Bacteroidales
+ASV_201	#377eb8	Clostridiales
+ASV_51	#377eb8	Clostridiales
+ASV_44	#377eb8	Clostridiales
+ASV_46	#377eb8	Clostridiales
+ASV_32	#e41a1c	Bacteroidales
+ASV_30	#377eb8	Clostridiales
+ASV_35	#377eb8	Clostridiales
+ASV_52	#377eb8	Clostridiales
+ASV_50	#377eb8	Clostridiales
+ASV_36	#ffff33	Erysipelotrichales
+ASV_33	#e41a1c	Bacteroidales
+ASV_417	#377eb8	Clostridiales
+ASV_43	#377eb8	Clostridiales
+ASV_38	#377eb8	Clostridiales
+ASV_56	#377eb8	Clostridiales
+ASV_34	#f781bf	Unassigned
+ASV_1253	#377eb8	Clostridiales
+ASV_53	#e41a1c	Bacteroidales
+ASV_42	#377eb8	Clostridiales
+ASV_45	#377eb8	Clostridiales
+ASV_37	#e41a1c	Bacteroidales
+ASV_39	#a65628	Lactobacillales
+ASV_59	#377eb8	Clostridiales
+ASV_109	#377eb8	Clostridiales
+ASV_58	#377eb8	Clostridiales
+ASV_40	#377eb8	Clostridiales
+ASV_48	#377eb8	Clostridiales
+ASV_64	#377eb8	Clostridiales
+ASV_55	#377eb8	Clostridiales
+ASV_74	#377eb8	Clostridiales
+ASV_89	#377eb8	Clostridiales
+ASV_73	#377eb8	Clostridiales
+ASV_1365	#377eb8	Clostridiales
+ASV_57	#e41a1c	Bacteroidales
+ASV_82	#377eb8	Clostridiales
+ASV_47	#e41a1c	Bacteroidales
+ASV_54	#e41a1c	Bacteroidales
+ASV_75	#e41a1c	Bacteroidales
+ASV_49	#e41a1c	Bacteroidales
+ASV_76	#377eb8	Clostridiales
+ASV_507	#377eb8	Clostridiales
+ASV_61	#e41a1c	Bacteroidales
+ASV_465	#377eb8	Clostridiales
+ASV_63	#e41a1c	Bacteroidales
+ASV_1412	#377eb8	Clostridiales
+ASV_67	#377eb8	Clostridiales
+ASV_62	#377eb8	Clostridiales
+ASV_81	#e41a1c	Bacteroidales
+ASV_91	#377eb8	Clostridiales
+ASV_80	#377eb8	Clostridiales
+ASV_60	#e41a1c	Bacteroidales
+ASV_94	#377eb8	Clostridiales
+ASV_71	#e41a1c	Bacteroidales
+ASV_392	#377eb8	Clostridiales
+ASV_88	#377eb8	Clostridiales
+ASV_68	#377eb8	Clostridiales
+ASV_98	#377eb8	Clostridiales
+ASV_72	#e41a1c	Bacteroidales
+ASV_83	#e41a1c	Bacteroidales
+ASV_300	#377eb8	Clostridiales
+ASV_157	#377eb8	Clostridiales
+ASV_102	#377eb8	Clostridiales
+ASV_125	#377eb8	Clostridiales
+ASV_87	#377eb8	Clostridiales
+ASV_206	#377eb8	Clostridiales
+ASV_117	#377eb8	Clostridiales
+ASV_77	#e41a1c	Bacteroidales
+ASV_720	#377eb8	Clostridiales
+ASV_122	#377eb8	Clostridiales
+ASV_95	#e41a1c	Bacteroidales
+ASV_78	#377eb8	Clostridiales
+ASV_130	#377eb8	Clostridiales
+ASV_85	#377eb8	Clostridiales
+ASV_142	#377eb8	Clostridiales
+ASV_1658	#377eb8	Clostridiales
+ASV_118	#377eb8	Clostridiales
+ASV_93	#e41a1c	Bacteroidales
+ASV_1450	#377eb8	Clostridiales
+ASV_126	#377eb8	Clostridiales
+ASV_101	#e41a1c	Bacteroidales
+ASV_333	#377eb8	Clostridiales
+ASV_100	#377eb8	Clostridiales
+ASV_96	#377eb8	Clostridiales
+ASV_90	#377eb8	Clostridiales
+ASV_84	#e41a1c	Bacteroidales
+ASV_103	#e41a1c	Bacteroidales
+ASV_107	#377eb8	Clostridiales
+ASV_99	#e41a1c	Bacteroidales
+ASV_104	#e41a1c	Bacteroidales
+ASV_119	#e41a1c	Bacteroidales
+ASV_106	#e41a1c	Bacteroidales
+ASV_112	#377eb8	Clostridiales
+ASV_86	#e41a1c	Bacteroidales
