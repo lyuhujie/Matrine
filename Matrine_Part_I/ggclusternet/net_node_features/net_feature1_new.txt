@@ -1,0 +1,15 @@
+value
+num.edges	4412
+num.pos.edges	4412
+num.neg.edges	0
+num.vertices	743
+connectance	0.0160056302670386
+average.degree	11.8761776581427
+average.path.length	4.57433063168859
+diameter	19.7373750197438
+edge.connectivity	0
+clustering.coefficient	0.845408904092733
+no.clusters	50
+centralization.degree	0.0796817012693495
+centralization.betweenness	0.04918457268596
+centralization.closeness	1.2785802414786

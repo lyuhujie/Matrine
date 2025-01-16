@@ -1,0 +1,22 @@
+mod	col
+1	model_56	#91D3A4
+2	model_1	#F47346
+3	model_5	#D6404E
+4	model_22	#FDB567
+5	mini_model	#C1C1C1
+6	model_3	#9E0142
+7	model_7	#E65948
+8	model_16	#F8FCB4
+9	model_4	#BA2148
+10	model_2	#F99655
+11	model_9	#FDD07D
+12	model_6	#FEE695
+13	model_8	#FEF6B1
+14	model_15	#6DC4A4
+15	model_21	#348BBB
+16	model_13	#EBF7A0
+17	model_47	#B4E0A2
+18	model_23	#466DB0
+19	model_17	#50A9AF
+20	model_35	#5E4FA2
+21	model_40	#D3ED9B
