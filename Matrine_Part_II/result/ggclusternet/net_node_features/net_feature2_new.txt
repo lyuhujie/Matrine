@@ -1,0 +1,17 @@
+value
+num.edges(L)	2488
+num.pos.edges	2488
+num.neg.edges	0
+num.vertices(n)	695
+Connectance(edge_density)	0.0103165882279767
+average.degree(Average K)	7.15971223021583
+average.path.length	2.96463149489304
+diameter	8.30436007480556
+edge.connectivity	0
+mean.clustering.coefficient(Average.CC)	0.666805229711646
+no.clusters	87
+centralization.degree	0.0415566106192856
+centralization.betweenness	0.0158973502671503
+centralization.closeness	0.969663426004773
+RM(relative.modularity)	1.58476888439928
+the.number.of.keystone.nodes	Not.calculated
