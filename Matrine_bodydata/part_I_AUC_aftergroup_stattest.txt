@@ -1,0 +1,4 @@
+.y.	group1	group2	p	p.adj	p.format	p.signif	method
+AUC	NC	HD	0.90568678413077	1	0.91	ns	T-test
+AUC	NC	MD	6.8153730636562e-08	2e-07	6.8e-08	****	T-test
+AUC	HD	MD	1.54332043749076e-09	4.6e-09	1.5e-09	****	T-test
