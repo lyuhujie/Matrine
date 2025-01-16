@@ -1,0 +1,54 @@
+[TOC]
+
+
+
+```{r}
+# 加载必要的库
+library(pheatmap)
+library(RColorBrewer)
+library(dplyr)
+library(readr)
+library(tibble)
+library(fs)
+
+# 从文件读取数据
+data <- read.table("C:/Matrine_part_II/result/ggclusternet/result_1000_igraph2/co-occurence_Grobel_net.txt", header = TRUE, sep = "\t", row.names = 1)
+# 显示数据前几行
+head(data)
+
+## 数据转化
+# log2转换
+data_log2 <- log2(data)
+# 行归一化
+data_scaled <- t(scale(t(data_log2)))
+
+## 数据转化
+# 行和列聚类
+row_clusters <- hclust(dist(data_scaled, method = "euclidean"), method = "complete")
+col_clusters <- hclust(dist(t(data_scaled), method = "euclidean"), method = "complete")
+# 切割树
+cutree_row <- cutree(row_clusters, k = 2)
+cutree_col <- cutree(col_clusters, k = 2)
+
+
+## 热图绘制
+#custom_colors <- colorRampPalette(c("#D6604D", "#F7F7F7", "#4393C3"))(100)
+custom_colors <- colorRampPalette(c("#4393C3", "#F7F7F7", "#D6604D"))(100)
+# 绘制热图并保存为对象
+p <- pheatmap(data_scaled, 
+                         cluster_rows = row_clusters, 
+                         cluster_cols = col_clusters, 
+                         cutree_rows = 2, 
+                         cutree_cols = 2, 
+                         color = custom_colors,
+                         display_numbers = TRUE)
+
+ggsave("C:/Matrine_part_II/result/ggclusternet/result_1000_igraph2/heatmap_network.pdf", plot = p$gtable, device = "pdf", width = 6, height = 5)
+```    
+
+
+
+
+
+
+ 
