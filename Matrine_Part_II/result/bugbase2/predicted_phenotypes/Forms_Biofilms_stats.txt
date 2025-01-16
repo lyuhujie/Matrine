@@ -1,0 +1,37 @@
+
+
+Forms_Biofilms
+Number of samples in each treatment group:
+
+  ANC   BMD CLMAT DHMAT 
+   12    12    11    12 
+
+Proportion with phenotype (mean):
+       ANC        BMD      CLMAT      DHMAT 
+0.15140384 0.14451299 0.08780600 0.07422521 
+
+Proportion with phenotype (median):
+       ANC        BMD      CLMAT      DHMAT 
+0.16267679 0.12010197 0.04031126 0.02839924 
+
+Standard deviation:
+       ANC        BMD      CLMAT      DHMAT 
+0.10003644 0.15272866 0.08550762 0.10230299 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+    ANC_vs_BMD   ANC_vs_CLMAT   ANC_vs_DHMAT   BMD_vs_CLMAT   BMD_vs_DHMAT 
+      0.409510       0.189587       0.028421       0.694703       0.291343 
+CLMAT_vs_DHMAT 
+      0.235117 
+
+FDR-corrected pairwise p-values are:
+    ANC_vs_BMD   ANC_vs_CLMAT   ANC_vs_DHMAT   BMD_vs_CLMAT   BMD_vs_DHMAT 
+     0.4914125      0.4370140      0.1705242      0.6947025      0.4370140 
+CLMAT_vs_DHMAT 
+     0.4370140 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.1567639 

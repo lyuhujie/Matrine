@@ -1,0 +1,180 @@
+[TOC]
+
+
+## 加载所需的包
+```{r}
+# 软件检测和安装
+
+library(ggplot2)
+library(dplyr)
+library(ggbreak)
+library(grid) 
+library(tidyr)
+library(readr)
+
+```
+
+## 数据导入
+```{r}
+# 设置文件路径
+metadata_file <- "C:/Matrine_part_II/result/metadata.txt"
+faprotax_file <- "C:/Matrine_part_II/result/faprotax2/faprotax.txt"
+# 读取 metadata 
+metadata <- read.table(metadata_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+# 读取 all_group_longformat
+faprotax <- read.table(faprotax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+
+print(metadata)
+print(faprotax)
+
+```    
+
+## 数据处理1
+```{r}
+# 去除全为0的行
+faprotax <- faprotax %>%
+  filter(rowSums(select(., -groupID)) > 0)
+faprotax
+write_tsv(faprotax, "C:/Matrine_part_II/result/faprotax2/faprotax_less.txt")
+
+# 将faprotax数据从宽格式转换为长格式
+faprotax_long <- faprotax %>%
+  pivot_longer(names_to = "variable", -groupID, values_to = "Value")
+faprotax_long
+
+# 将长格式数据的列名设置为符合要求的样式
+colnames(faprotax_long) <- c("variable", "group", "value")
+faprotax_long
+write_tsv(faprotax_long, "C:/Matrine_part_II/result/faprotax2/faprotax_long.txt")
+
+###
+faprotax_long$value <- log2(faprotax_long$value + 1)
+
+# 将长格式数据重新转换为宽格式
+faprotax_wide <- faprotax_long %>%
+  pivot_wider(names_from = variable, values_from = value, values_fill = 0)
+
+# 导出已经做过log2转换的宽格式数据为txt文件
+write_tsv(faprotax_wide, "C:/Matrine_part_II/result/faprotax2/faprotax_wide_log2.txt")
+faprotax_wide
+
+# 合并faprotax数据和metadata
+merged_data <- faprotax_long %>%
+  left_join(metadata, by = c("group" = "SampleID"))
+
+merged_data
+
+# 按 variable 和 group 分组，计算 log2 值的均值
+plot_data <- merged_data %>%
+  group_by(variable, group.y) %>%
+  summarise(mean_value = mean(value, na.rm = TRUE), .groups = "drop")
+
+plot_data
+
+# 将 plot_data 转换为宽矩阵
+plot_data_wide <- plot_data %>%
+  pivot_wider(names_from = group.y, values_from = mean_value, values_fill = 0)
+
+# 导出宽矩阵为txt文件
+write_tsv(plot_data_wide, "C:/Matrine_part_II/result/faprotax2/plot_data_wide.txt")
+
+```    
+
+
+
+## 数据处理
+```{r}
+
+# 这里可以不用。先列出来。
+# # 定义变量顺序
+# variable_order <- c("methanol_oxidation", "methylotrophy", "sulfate_respiration", "sulfur_respiration",
+#                     "respiration_of_sulfur_compounds", "knallgas_bacteria", "dark_hydrogen_oxidation",
+#                     "nitrogen_fixation", "cellulolysis", "dark_sulfur_oxidation", "dark_oxidation_of_sulfur_compounds", "fermentation",
+#                     "aerobic_chemoheterotrophy", "human_gut", "human_associated", "mammal_gut", "animal_parasites_or_symbionts",
+#                     "aromatic_compound_degradation", "nitrate_reduction", "ureolysis", "reductive_acetogenesis", "chemoheterotrophy")
+# # print(merged_data)
+# 
+# # 仅保留 variable_order 中的变量
+# merged_data <- merged_data[merged_data$variable %in% variable_order, ]
+# 
+# merged_data$variable <- factor(merged_data$variable, levels = rev(variable_order)) # 逆转顺序以确保从上到下的顺序
+```    
+
+## 图形绘制
+```{r}
+# 自定义配色
+custom_colors <- c("ANC" = "#FBB4AE", "BMD" = "#B3CDE3", "CLMAT" = "#CCEBC5", "DHMAT" = "#EBE8C3")
+
+# # 按顺序排列
+# p <- ggplot(merged_data, aes(x = variable, y = value, fill = group)) +
+#   geom_bar(stat = "identity", position = "dodge") +
+#   scale_fill_manual(values = custom_colors) + # 应用自定义配色
+#   labs(title = "OTU Abundance") + # 设置标题
+#   theme_minimal() +
+#   scale_x_continuous(expand = c(0, 0), position = "top") # 设置 x 轴只在顶部展示
+  
+# 绘制柱状图
+p <- ggplot(plot_data, aes(x = variable, y = mean_value, fill = group.y)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = custom_colors) + # 应用自定义配色
+  labs(title = "OTU Abundance",
+       x = "Variable",
+       y = "Log2",
+       fill = "group") + # 设置标题和标签
+  theme_minimal() +
+  theme(
+    axis.text.y = element_text(size = 6, hjust = 1), # 设置字体大小为 6pt
+    axis.text.x = element_text(size = 6, angle = 45, hjust = 1), # 设置字体大小为 6pt，旋转标签
+    plot.title = element_text(size = 10, hjust = 0.5), # 设置标题字体大小并居中
+    panel.grid.major = element_blank(), # 移除主网格线
+    panel.grid.minor = element_blank(), # 移除次网格线
+    axis.line = element_line(color = "black"), # 添加坐标轴线
+    axis.ticks = element_line(color = "black"), # 添加刻度线
+    panel.background = element_blank() # 移除背景
+  )
+
+print(p)
+
+# 导出文件
+# Save the plot as a PNG file
+ggsave("C:/Matrine_part_II/result/faprotax2/bar_plot_new.png", plot = p, width = 12, height = 5)
+# Save the plot as a PDF file
+ggsave("C:/Matrine_part_II/result/faprotax2/bar_plot_new.pdf", plot = p, width = 12, height = 5)
+
+
+```    
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

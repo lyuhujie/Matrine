@@ -1,0 +1,37 @@
+
+
+Potentially_Pathogenic
+Number of samples in each treatment group:
+
+  ANC   BMD CLMAT DHMAT 
+   12    12    11    12 
+
+Proportion with phenotype (mean):
+      ANC       BMD     CLMAT     DHMAT 
+0.2216134 0.1626181 0.2283161 0.1954188 
+
+Proportion with phenotype (median):
+      ANC       BMD     CLMAT     DHMAT 
+0.2294245 0.1568763 0.1962599 0.1847362 
+
+Standard deviation:
+       ANC        BMD      CLMAT      DHMAT 
+0.09774392 0.04319800 0.05110390 0.05003936 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+    ANC_vs_BMD   ANC_vs_CLMAT   ANC_vs_DHMAT   BMD_vs_CLMAT   BMD_vs_DHMAT 
+     0.1978081      0.8327523      0.6706595      0.0021848      0.0518646 
+CLMAT_vs_DHMAT 
+     0.1506673 
+
+FDR-corrected pairwise p-values are:
+    ANC_vs_BMD   ANC_vs_CLMAT   ANC_vs_DHMAT   BMD_vs_CLMAT   BMD_vs_DHMAT 
+    0.29671217     0.83275225     0.80479144     0.01310871     0.15559383 
+CLMAT_vs_DHMAT 
+    0.29671217 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.04591021 

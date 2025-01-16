@@ -1,0 +1,37 @@
+
+
+Stress_Tolerant
+Number of samples in each treatment group:
+
+  ANC   BMD CLMAT DHMAT 
+   12    12    11    12 
+
+Proportion with phenotype (mean):
+      ANC       BMD     CLMAT     DHMAT 
+0.9573715 0.9853611 0.9925342 0.9875482 
+
+Proportion with phenotype (median):
+      ANC       BMD     CLMAT     DHMAT 
+0.9793930 0.9866648 0.9935603 0.9894989 
+
+Standard deviation:
+        ANC         BMD       CLMAT       DHMAT 
+0.045284369 0.007305903 0.003648703 0.007395806 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+    ANC_vs_BMD   ANC_vs_CLMAT   ANC_vs_DHMAT   BMD_vs_CLMAT   BMD_vs_DHMAT 
+      0.409510       0.059498       0.347358       0.015606       0.291343 
+CLMAT_vs_DHMAT 
+      0.059498 
+
+FDR-corrected pairwise p-values are:
+    ANC_vs_BMD   ANC_vs_CLMAT   ANC_vs_DHMAT   BMD_vs_CLMAT   BMD_vs_DHMAT 
+    0.40951040     0.11899609     0.40951040     0.09363365     0.40951040 
+CLMAT_vs_DHMAT 
+    0.11899609 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.05697633 

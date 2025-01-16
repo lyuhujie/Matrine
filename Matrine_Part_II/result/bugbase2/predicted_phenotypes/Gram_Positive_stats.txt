@@ -1,0 +1,37 @@
+
+
+Gram_Positive
+Number of samples in each treatment group:
+
+  ANC   BMD CLMAT DHMAT 
+   12    12    11    12 
+
+Proportion with phenotype (mean):
+      ANC       BMD     CLMAT     DHMAT 
+0.7889720 0.7741011 0.8075399 0.8429149 
+
+Proportion with phenotype (median):
+      ANC       BMD     CLMAT     DHMAT 
+0.7796804 0.8143360 0.8128809 0.8857932 
+
+Standard deviation:
+       ANC        BMD      CLMAT      DHMAT 
+0.11710846 0.16068585 0.08841493 0.10594210 
+
+Pairwise Mann-Whitney-Wilcoxon Tests were performed.
+Pairwise p-values are:
+    ANC_vs_BMD   ANC_vs_CLMAT   ANC_vs_DHMAT   BMD_vs_CLMAT   BMD_vs_DHMAT 
+       0.97740        0.78595        0.26567        1.00000        0.44283 
+CLMAT_vs_DHMAT 
+       0.21150 
+
+FDR-corrected pairwise p-values are:
+    ANC_vs_BMD   ANC_vs_CLMAT   ANC_vs_DHMAT   BMD_vs_CLMAT   BMD_vs_DHMAT 
+     1.0000000      1.0000000      0.7970088      1.0000000      0.8856664 
+CLMAT_vs_DHMAT 
+     0.7970088 
+
+Kruskal-Wallis Test was performed.
+
+Group p-value is:
+0.6064384 
