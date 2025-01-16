@@ -1,0 +1,7 @@
+.y.	group1	group2	p	p.adj	p.format	p.signif	method
+Value	NC	MD	4.10248570742517e-06	2.5e-05	4.1e-06	****	T-test
+Value	NC	LMAT	3.11350470595814e-07	1.9e-06	3.1e-07	****	T-test
+Value	NC	HMAT	7.18464345661414e-10	4.3e-09	7.2e-10	****	T-test
+Value	MD	LMAT	0.265121629361511	1	0.26512	ns	T-test
+Value	MD	HMAT	0.00078337153563258	0.0047	0.00078	***	T-test
+Value	LMAT	HMAT	0.0112046579832399	0.067	0.01120	*	T-test

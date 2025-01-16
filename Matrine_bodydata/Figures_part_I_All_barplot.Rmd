@@ -1,0 +1,953 @@
+[TOC]
+
+
+## 绘制AUC柱状图
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+
+# 读取数据文件
+data <- read.table("C:/Matrine_bodydata/part_I_AUC.txt", header = TRUE, sep = "\t")
+# 转换数据框为长格式
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "AUC") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HFD", "MD"))) # 设置分组顺序
+
+
+## 绘制柱状图并保存为 PDF 文件
+# 高级配色方案
+# colors <- c("NC" = "#66c2a5", "HFD" = "#fc8d62", "MD" = "#8da0cb")
+# colors <- c("NC" = "#E41A1C", "HFD" = "#377EB8", "MD" = "#4DAF4A")
+# colors <- c("NC" = "#440154FF", "HFD" = "#21908CFF", "MD" = "#FDE725FF")
+# colors <- c("NC" = "#1B9E77", "HFD" = "#D95F02", "MD" = "#7570B3")
+# colors <- c("NC" = "#A6CEE3", "HFD" = "#1F78B4", "MD" = "#B2DF8A")
+colors <- c("NC" = "#FBB4AE", "HFD" = "#B3CDE3", "MD" = "#CCEBC5")
+# colors <- c("NC" = "#FDBF6F", "HFD" = "#FF7F00", "MD" = "#CAB2D6")
+# colors <- c("NC" = "#DEEBF7", "HFD" = "#9ECAE1", "MD" = "#3182BD")
+# colors <- c("NC" = "#FEE6CE", "HFD" = "#FDAE6B", "MD" = "#E6550D")
+
+# 绘制柱状图并保存为 PDF 文件
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_long, aes(x = Group, y = AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = "AUC", title = "AUC Data") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+ggsave("C:/Matrine_bodydata/part_I_AUC_bar_plot.pdf", plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```    
+
+
+
+
+## 绘制AUC_after_group柱状图
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+
+# 读取数据文件
+data <- read.table("C:/Matrine_bodydata/part_I_AUC_aftergroup.txt", header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "AUC") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HD", "MD"))) # 设置分组顺序
+
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(AUC, na.rm = TRUE),
+    se_AUC = sd(AUC, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = "AUC", title = "AUC Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(AUC ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+
+write.table(stat_test, file = "C:/Matrine_bodydata/part_I_AUC_aftergroup_stattest.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HD"), c("NC", "MD"), c("HD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+
+ggsave("C:/Matrine_bodydata/part_I_AUC_aftergroup_bar_plot.pdf", plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+
+```    
+
+
+
+
+## 1绘制乙酸含量柱状图 - Acetic_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+name = "Acetic_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,name,filetype1,sep ="")
+stattest <- paste(file1,part,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HD"), c("NC", "MD"), c("HD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```    
+
+ 
+ 
+## 2绘制丙酸含量柱状图 - Propionic_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+name = "Propionic_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,name,filetype1,sep ="")
+stattest <- paste(file1,part,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HD"), c("NC", "MD"), c("HD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```    
+ 
+
+ 
+## 3绘制丁酸含量柱状图 - Butyric_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+name = "Butyric_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,name,filetype1,sep ="")
+stattest <- paste(file1,part,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HD"), c("NC", "MD"), c("HD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```     
+ 
+ 
+## 4绘制戊酸含量柱状图 - Valeric_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+name = "Valeric_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,name,filetype1,sep ="")
+stattest <- paste(file1,part,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HD"), c("NC", "MD"), c("HD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```     
+ 
+ 
+ 
+ 
+## 5绘制戊酸含量柱状图 - Isovaleric_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+name = "Isovaleric_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,name,filetype1,sep ="")
+stattest <- paste(file1,part,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HD"), c("NC", "MD"), c("HD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```     
+ 
+ 
+
+## 1结肠内容物乙酸含量-Acetic_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+site = "Colon_"
+name = "Acetic_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,site,name,filetype1,sep ="")
+stattest <- paste(file1,part,site,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,site,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HFD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HFD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HFD"), c("NC", "MD"), c("HFD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```   
+ 
+ 
+ 
+## 2结肠内容物丙酸含量-Propionic_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+site = "Colon_"
+name = "Propionic_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,site,name,filetype1,sep ="")
+stattest <- paste(file1,part,site,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,site,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HFD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HFD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HFD"), c("NC", "MD"), c("HFD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```   
+
+ 
+ 
+## 3结肠内容物丁酸含量-Butyric_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+site = "Colon_"
+name = "Butyric_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,site,name,filetype1,sep ="")
+stattest <- paste(file1,part,site,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,site,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HFD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HFD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HFD"), c("NC", "MD"), c("HFD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```   
+ 
+ 
+ 
+## 4结肠内容物丁酸含量-Valeric_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+site = "Colon_"
+name = "Valeric_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,site,name,filetype1,sep ="")
+stattest <- paste(file1,part,site,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,site,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HFD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HFD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HFD"), c("NC", "MD"), c("HFD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```   
+ 
+ 
+ 
+## 5结肠内容物异戊酸含量-Isovaleric_acid
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(ggpubr) # 用于添加统计检验结果
+library(multcomp) # 用于Tukey检验
+library(ggsignif) # 用于添加显著性检验结果
+library(tidyverse)
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+site = "Colon_"
+name = "Isovaleric_acid"
+# 文件后标
+filemethod1 = "_stattest"
+filemethod2 = "_bar_plot"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+filename <- paste(file1,part,site,name,filetype1,sep ="")
+stattest <- paste(file1,part,site,name,filemethod1,filetype1,sep ="")
+barplotA <- paste(file1,part,site,name,filemethod2,filetype2,sep ="")
+print(filename)
+print(stattest)
+print(barplotA)
+
+# 读取数据文件
+data <- read.table(filename, header = TRUE, sep = "\t")
+# 转换数据框为长格式
+data_long <- data %>%
+  pivot_longer(cols = everything(), names_to = "Group", values_to = "Value") %>%
+  mutate(Group = factor(Group, levels = c("NC", "HFD", "MD"))) # 设置分组顺序
+# 计算每组的平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Group) %>%
+  summarise(
+    mean_AUC = mean(Value, na.rm = TRUE),
+    se_AUC = sd(Value, na.rm = TRUE) / sqrt(n())
+  )
+
+# 高级配色方案
+colors <- c("NC" = "#FBB4AE", "HFD" = "#B3CDE3", "MD" = "#CCEBC5") # Pastel1 配色方案
+# 绘制柱状图并保存为 PDF 文件
+bar_plot <- ggplot(data_summary, aes(x = Group, y = mean_AUC, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", width = 0.6) +
+  geom_errorbar(aes(ymin = mean_AUC - se_AUC, ymax = mean_AUC + se_AUC), width = 0.2, position = position_dodge(0.9)) +
+  scale_fill_manual(values = colors) +
+  labs(x = "Group", y = name, title = "Data After Grouping") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+# 进行统计检验（T检验）
+stat_test <- compare_means(Value ~ Group, data = data_long, method = "t.test", p.adjust.method = "bonferroni")
+stat_test
+write.table(stat_test, file = stattest, sep = "\t", row.names = FALSE, quote = FALSE)
+
+# 将显著性标记添加到图中
+bar_plot <- bar_plot +
+  geom_signif(comparisons = list(c("NC", "HFD"), c("NC", "MD"), c("HFD", "MD")), 
+              map_signif_level = TRUE,
+              stat = "signif",
+              position = "identity",
+              step_increase = 0.1)
+
+ggsave(barplotA, plot = bar_plot, width = 4, height = 3.5)
+bar_plot
+```   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

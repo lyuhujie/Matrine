@@ -1,0 +1,6 @@
+
+	Kruskal-Wallis rank sum test
+
+data:  Value by Group
+Kruskal-Wallis chi-squared = 52.87, df = 2, p-value = 3.306e-12
+

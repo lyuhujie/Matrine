@@ -1,0 +1,588 @@
+[TOC]
+
+
+## OTGG图
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(broom)
+library(purrr)
+library(ggpubr) # 用于ANOVA结果可视化
+
+
+
+# 读取数据文件
+data <- read.table("C:/Matrine_bodydata/part_I_OTGG.txt", header = TRUE, sep = "\t")
+# 检查数据框架结构
+str(data)
+# 转换数据框为长格式，并根据列名称分组
+data_long <- data %>%
+  pivot_longer(-Time.min, names_to = "Replicate", values_to = "Value") %>%
+  mutate(Group = case_when(
+    grepl("Control", Replicate) ~ "Control",
+    grepl("HFD", Replicate) ~ "HFD",
+    grepl("Model", Replicate) ~ "Model"
+  ))
+# 计算平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Time.min, Group) %>%
+  summarise(
+    Mean = mean(Value),
+    SE = sd(Value) / sqrt(n())
+  )
+
+# 绘制折线图并保存为 PDF 文件
+# 高级配色方案
+colors <- c("Control" = "#1b9e77", "HFD" = "#d95f02", "Model" = "#7570b3")
+shapes <- c("Control" = 8, "HFD" = 9, "Model" = 10)
+
+# 绘制折线图并保存为 PDF 文件
+line_plot <- ggplot(data_summary, aes(x = Time.min, y = Mean, color = Group, shape = Group)) +
+  geom_line(size = 0.25) +
+  geom_point(size = 1) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 5) +
+  labs(x = "Time (min)", y = "Mean Value ± SE", title = "OTGG Test Data with Error Bars") +
+  scale_color_manual(values = colors) +
+  scale_shape_manual(values = shapes) +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+
+ggsave("C:/Matrine_bodydata/part_I_OTGG_line_plot.pdf", plot = line_plot, width = 3, height = 2)
+line_plot
+
+
+
+
+## 进行T-test
+# 分组
+control <- data_long %>% filter(Group == "Control")
+hfd <- data_long %>% filter(Group == "HFD")
+model <- data_long %>% filter(Group == "Model")
+# 进行T检验
+t_test_results <- list(
+  Control_vs_HFD = t.test(control$Value, hfd$Value),
+  Control_vs_Model = t.test(control$Value, model$Value),
+  HFD_vs_Model = t.test(hfd$Value, model$Value)
+)
+# 展示T检验结果
+t_test_results_df <- t_test_results %>%
+  map_df(tidy) %>%
+  mutate(comparison = names(t_test_results)) %>%
+  select(comparison, everything())
+# 保存T检验结果为txt文件
+write.table(t_test_results_df, file = "C:/Matrine_bodydata/part_I_OTGG_t_test.txt", sep = "\t", row.names = FALSE)
+t_test_results_df
+
+
+## 单因素方差分析(ANOVA)
+anova_results <- aov(Value ~ Group, data = data_long)
+# 展示ANOVA结果
+summary(anova_results)
+anova_summary <- summary(anova_results)
+# 保存ANOVA结果为txt文件
+capture.output(anova_summary, file = "C:/Matrine_bodydata/part_I_OTGG_ANOVA.txt")
+# 可视化ANOVA结果并保存为PDF文件
+anova_plot <- ggboxplot(data_long, x = "Group", y = "Value", 
+                        color = "Group", palette = colors, 
+                        add = "jitter") + 
+  #geom_boxplot(outlier.size = 0, size = 0.75, aes(color = Group)) +  # 调整箱线图的描边宽度
+  stat_compare_means(method = "anova", label = "p.signif") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+# 文件保存
+ggsave("C:/Matrine_bodydata/part_I_OTGG_ANOVA.pdf", plot = anova_plot, width = 3, height = 3)
+anova_plot
+
+
+## 克鲁斯卡尔-沃利斯检验kruskal
+kruskal_results <- kruskal.test(Value ~ Group, data = data_long)
+# 展示克鲁斯卡尔-沃利斯检验结果
+kruskal_results
+capture.output(kruskal_results, file = "C:/Matrine_bodydata/part_I_OTGG_kruskal.txt")
+
+
+
+
+
+
+```    
+ 
+ 
+## 分组后OTGG图
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(broom)
+library(purrr)
+library(ggpubr) # 用于ANOVA结果可视化
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+name = "OTGG_aftergroup"
+# 文件后标
+filemethod1 = "_line_plot"
+filemethod2 = "_kruskal"
+filemethod3 = "_t_test"
+filemethod4 = "_ANOVA"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+datafile <- paste(file1,part,name,filetype1,sep ="")
+lineplot <- paste(file1,part,name,filemethod1,filetype2,sep ="")
+ttest <- paste(file1,part,name,filemethod3,filetype1,sep ="")
+ANOVAt1 <- paste(file1,part,name,filemethod4,filetype1,sep ="")
+ANOVAt2 <- paste(file1,part,name,filemethod4,filetype2,sep ="")
+kruskal <- paste(file1,part,name,filemethod2,filetype1,sep ="")
+
+print(datafile)
+print(lineplot)
+print(ttest)
+print(ANOVAt1)
+print(ANOVAt2)
+print(kruskal)
+
+# 读取数据文件
+data <- read.table(datafile, header = TRUE, sep = "\t")
+# 检查数据框架结构
+str(data)
+# 转换数据框为长格式，并根据列名称分组
+data_long <- data %>%
+  pivot_longer(-Time.min, names_to = "Replicate", values_to = "Value") %>%
+  mutate(Group = case_when(
+    grepl("Control", Replicate) ~ "Control",
+    grepl("HFD", Replicate) ~ "HFD",
+    grepl("MD", Replicate) ~ "MD"
+  ))
+# 计算平均值和标准误差
+data_summary <- data_long %>%
+  group_by(Time.min, Group) %>%
+  summarise(
+    Mean = mean(Value),
+    SE = sd(Value) / sqrt(n())
+  )
+
+# 绘制折线图并保存为 PDF 文件
+# 高级配色方案
+colors <- c("Control" = "#1b9e77", "HFD" = "#d95f02", "MD" = "#7570b3")
+shapes <- c("Control" = 8, "HFD" = 9, "MD" = 10)
+
+# 绘制折线图并保存为 PDF 文件
+line_plot <- ggplot(data_summary, aes(x = Time.min, y = Mean, color = Group, shape = Group)) +
+  geom_line(size = 0.25) +
+  geom_point(size = 1) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 5) +
+  labs(x = "Time (min)", y = "Mean Value ± SE", title = "OTGG Test Data with Error Bars") +
+  scale_color_manual(values = colors) +
+  scale_shape_manual(values = shapes) +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+       
+ggsave(lineplot, plot = line_plot, width = 3, height = 2)
+line_plot
+
+
+## 进行T-test
+# 分组
+control <- data_long %>% filter(Group == "Control")
+hfd <- data_long %>% filter(Group == "HFD")
+model <- data_long %>% filter(Group == "MD")
+# 进行T检验
+t_test_results <- list(
+  Control_vs_HFD = t.test(control$Value, hfd$Value),
+  Control_vs_Model = t.test(control$Value, model$Value),
+  HFD_vs_Model = t.test(hfd$Value, model$Value)
+)
+
+# 使用 broom 包中的 tidy 函数将结果转换为数据框，并添加 comparison 列
+t_test_results_df <- t_test_results %>%
+  map_df(tidy, .id = "comparison")
+# 保存T检验结果为txt文件            
+write.table(t_test_results_df, file = ttest, sep = "\t", row.names = FALSE, quote = FALSE)
+t_test_results_df
+
+
+## 单因素方差分析(ANOVA)
+anova_results <- aov(Value ~ Group, data = data_long)
+# 展示ANOVA结果
+summary(anova_results)
+anova_summary <- summary(anova_results)
+# 保存ANOVA结果为txt文件                 
+capture.output(anova_summary, file = ANOVAt1)
+# 可视化ANOVA结果并保存为PDF文件
+anova_plot <- ggboxplot(data_long, x = "Group", y = "Value", 
+                        color = "Group", palette = colors, 
+                        add = "jitter") + 
+  #geom_boxplot(outlier.size = 0, size = 0.75, aes(color = Group)) +  # 调整箱线图的描边宽度
+  stat_compare_means(method = "anova", label = "p.signif") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+# 文件保存
+ggsave(ANOVAt2, plot = anova_plot, width = 3, height = 3)
+anova_plot
+
+
+## 克鲁斯卡尔-沃利斯检验kruskal
+kruskal_results <- kruskal.test(Value ~ Group, data = data_long)
+# 展示克鲁斯卡尔-沃利斯检验结果
+kruskal_results                           
+capture.output(kruskal_results, file = kruskal)
+
+```    
+
+ 
+
+ 
+## 17周体重变化图
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(broom)
+library(purrr)
+library(ggpubr) # 用于ANOVA结果可视化
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+name = "17weeks_bodyweight"
+# 文件后标
+filemethod1 = "_line_plot"
+filemethod2 = "_kruskal"
+filemethod3 = "_t_test"
+filemethod4 = "_ANOVA"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+datafile <- paste(file1,part,name,filetype1,sep ="")
+lineplot <- paste(file1,part,name,filemethod1,filetype2,sep ="")
+ttest <- paste(file1,part,name,filemethod3,filetype1,sep ="")
+ANOVAt1 <- paste(file1,part,name,filemethod4,filetype1,sep ="")
+ANOVAt2 <- paste(file1,part,name,filemethod4,filetype2,sep ="")
+kruskal <- paste(file1,part,name,filemethod2,filetype1,sep ="")
+
+print(datafile)
+print(lineplot)
+print(ttest)
+print(ANOVAt1)
+print(ANOVAt2)
+print(kruskal)
+
+# 读取数据文件
+data <- read.table(datafile, header = TRUE, sep = "\t")
+# 检查数据框架结构
+str(data)
+# 转换数据框为长格式，并根据列名称分组
+data_long <- data %>%
+  pivot_longer(-weeks, names_to = "Replicate", values_to = "Value") %>%
+  mutate(Group = case_when(
+    grepl("Control", Replicate) ~ "Control",
+    grepl("HFD", Replicate) ~ "HFD",
+    grepl("MD", Replicate) ~ "MD"
+  ))
+# 计算平均值和标准误差
+data_summary <- data_long %>%
+  group_by(weeks, Group) %>%
+  summarise(
+    Mean = mean(Value),
+    SE = sd(Value) / sqrt(n())
+  )
+
+# 绘制折线图并保存为 PDF 文件
+# 高级配色方案
+colors <- c("Control" = "#1b9e77", "HFD" = "#d95f02", "MD" = "#7570b3")
+shapes <- c("Control" = 8, "HFD" = 9, "MD" = 10)
+
+# 绘制折线图并保存为 PDF 文件
+line_plot <- ggplot(data_summary, aes(x = weeks, y = Mean, color = Group, shape = Group)) +
+  geom_line(size = 0.25) +
+  geom_point(size = 0.75) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.5, size = 0.25) +
+  labs(x = "weeks", y = "Mean Value ± SE", title = "OTGG Test Data with Error Bars") +
+  scale_color_manual(values = colors) +
+  scale_shape_manual(values = shapes) +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+       
+ggsave(lineplot, plot = line_plot, width = 3, height = 2)
+line_plot
+
+
+## 进行T-test
+# 分组
+control <- data_long %>% filter(Group == "Control")
+hfd <- data_long %>% filter(Group == "HFD")
+model <- data_long %>% filter(Group == "MD")
+# 进行T检验
+t_test_results <- list(
+  Control_vs_HFD = t.test(control$Value, hfd$Value),
+  Control_vs_Model = t.test(control$Value, model$Value),
+  HFD_vs_Model = t.test(hfd$Value, model$Value)
+)
+
+# 使用 broom 包中的 tidy 函数将结果转换为数据框，并添加 comparison 列
+t_test_results_df <- t_test_results %>%
+  map_df(tidy, .id = "comparison")
+# 保存T检验结果为txt文件            
+write.table(t_test_results_df, file = ttest, sep = "\t", row.names = FALSE, quote = FALSE)
+t_test_results_df
+
+
+## 单因素方差分析(ANOVA)
+anova_results <- aov(Value ~ Group, data = data_long)
+# 展示ANOVA结果
+summary(anova_results)
+anova_summary <- summary(anova_results)
+# 保存ANOVA结果为txt文件                 
+capture.output(anova_summary, file = ANOVAt1)
+# 可视化ANOVA结果并保存为PDF文件
+anova_plot <- ggboxplot(data_long, x = "Group", y = "Value", 
+                        color = "Group", palette = colors, 
+                        add = "jitter") + 
+  #geom_boxplot(outlier.size = 0, size = 0.75, aes(color = Group)) +  # 调整箱线图的描边宽度
+  stat_compare_means(method = "anova", label = "p.signif") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+# 文件保存
+ggsave(ANOVAt2, plot = anova_plot, width = 3, height = 3)
+anova_plot
+
+
+## 克鲁斯卡尔-沃利斯检验kruskal
+kruskal_results <- kruskal.test(Value ~ Group, data = data_long)
+# 展示克鲁斯卡尔-沃利斯检验结果
+kruskal_results                           
+capture.output(kruskal_results, file = kruskal)
+
+```    
+ 
+ 
+ 
+ 
+ ## 17周饮食量变化图
+```{r}
+# 软件检测和安装
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(broom)
+library(purrr)
+library(ggpubr) # 用于ANOVA结果可视化
+
+# 文件夹位置
+file1 = "C:/Matrine_bodydata/"
+# 具体文件前标
+part = "part_I_"
+name = "17weeks_dietweight"
+# 文件后标
+filemethod1 = "_line_plot"
+filemethod2 = "_kruskal"
+filemethod3 = "_t_test"
+filemethod4 = "_ANOVA"
+# 文件种类
+filetype1 = ".txt"
+filetype2 = ".pdf"
+# 生成文件名
+datafile <- paste(file1,part,name,filetype1,sep ="")
+lineplot <- paste(file1,part,name,filemethod1,filetype2,sep ="")
+ttest <- paste(file1,part,name,filemethod3,filetype1,sep ="")
+ANOVAt1 <- paste(file1,part,name,filemethod4,filetype1,sep ="")
+ANOVAt2 <- paste(file1,part,name,filemethod4,filetype2,sep ="")
+kruskal <- paste(file1,part,name,filemethod2,filetype1,sep ="")
+
+print(datafile)
+print(lineplot)
+print(ttest)
+print(ANOVAt1)
+print(ANOVAt2)
+print(kruskal)
+
+# 读取数据文件
+data <- read.table(datafile, header = TRUE, sep = "\t")
+# 检查数据框架结构
+str(data)
+# 转换数据框为长格式，并根据列名称分组
+data_long <- data %>%
+  pivot_longer(-weeks, names_to = "Replicate", values_to = "Value") %>%
+  mutate(Group = case_when(
+    grepl("Control", Replicate) ~ "Control",
+    grepl("HFD", Replicate) ~ "HFD",
+    grepl("MD", Replicate) ~ "MD"
+  ))
+# 计算平均值和标准误差
+data_summary <- data_long %>%
+  group_by(weeks, Group) %>%
+  summarise(
+    Mean = mean(Value),
+    SE = sd(Value) / sqrt(n())
+  )
+
+# 绘制折线图并保存为 PDF 文件
+# 高级配色方案
+colors <- c("Control" = "#1b9e77", "HFD" = "#d95f02", "MD" = "#7570b3")
+shapes <- c("Control" = 8, "HFD" = 9, "MD" = 10)
+
+# 绘制折线图并保存为 PDF 文件
+line_plot <- ggplot(data_summary, aes(x = weeks, y = Mean, color = Group, shape = Group)) +
+  geom_line(size = 0.25) +
+  geom_point(size = 0.75) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.5, size = 0.25) +
+  labs(x = "weeks", y = "Mean Value ± SE", title = "OTGG Test Data with Error Bars") +
+  scale_color_manual(values = colors) +
+  scale_shape_manual(values = shapes) +
+  scale_y_continuous(limits = c(0, 30)) +  # 设置纵坐标范围
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+       
+ggsave(lineplot, plot = line_plot, width = 3, height = 2)
+line_plot
+
+
+## 进行T-test
+# 分组
+control <- data_long %>% filter(Group == "Control")
+hfd <- data_long %>% filter(Group == "HFD")
+model <- data_long %>% filter(Group == "MD")
+# 进行T检验
+t_test_results <- list(
+  Control_vs_HFD = t.test(control$Value, hfd$Value),
+  Control_vs_Model = t.test(control$Value, model$Value),
+  HFD_vs_Model = t.test(hfd$Value, model$Value)
+)
+
+# 使用 broom 包中的 tidy 函数将结果转换为数据框，并添加 comparison 列
+t_test_results_df <- t_test_results %>%
+  map_df(tidy, .id = "comparison")
+# 保存T检验结果为txt文件            
+write.table(t_test_results_df, file = ttest, sep = "\t", row.names = FALSE, quote = FALSE)
+t_test_results_df
+
+
+## 单因素方差分析(ANOVA)
+anova_results <- aov(Value ~ Group, data = data_long)
+# 展示ANOVA结果
+summary(anova_results)
+anova_summary <- summary(anova_results)
+# 保存ANOVA结果为txt文件                 
+capture.output(anova_summary, file = ANOVAt1)
+# 可视化ANOVA结果并保存为PDF文件
+anova_plot <- ggboxplot(data_long, x = "Group", y = "Value", 
+                        color = "Group", palette = colors, 
+                        add = "jitter") + 
+  #geom_boxplot(outlier.size = 0, size = 0.75, aes(color = Group)) +  # 调整箱线图的描边宽度
+  stat_compare_means(method = "anova", label = "p.signif") +
+  theme_minimal(base_size = 6) +
+  theme(
+    plot.title = element_text(size = 6, face = "bold"),
+    axis.title = element_text(size = 6),
+    axis.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    legend.text = element_text(size = 6),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
+# 文件保存
+ggsave(ANOVAt2, plot = anova_plot, width = 3, height = 3)
+anova_plot
+
+
+## 克鲁斯卡尔-沃利斯检验kruskal
+kruskal_results <- kruskal.test(Value ~ Group, data = data_long)
+# 展示克鲁斯卡尔-沃利斯检验结果
+kruskal_results                           
+capture.output(kruskal_results, file = kruskal)
+
+```    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

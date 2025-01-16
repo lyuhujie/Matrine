@@ -1,0 +1,4 @@
+.y.	group1	group2	p	p.adj	p.format	p.signif	method
+Value	NC	HFD	0.888363605658506	1	0.89	ns	T-test
+Value	NC	MD	0.563911705641558	1	0.56	ns	T-test
+Value	HFD	MD	0.496660218246977	1	0.50	ns	T-test

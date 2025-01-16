@@ -1,0 +1,3 @@
+            Df Sum Sq Mean Sq F value Pr(>F)
+Group        3  26.46    8.82   0.931  0.439
+Residuals   28 265.16    9.47               
